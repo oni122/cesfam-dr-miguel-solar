@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "prisma generate && prisma migrate deploy && astro build",
+    "build": "prisma generate && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "prisma:generate": "prisma generate",
