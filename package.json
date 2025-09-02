@@ -1,0 +1,34 @@
+{
+  "name": "cesfam",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "prisma:generate": "prisma generate",
+    "prisma:studio": "prisma studio",
+    "prisma:migrate:dev": "prisma migrate dev --name init",
+    "prisma:migrate:reset": "prisma migrate reset --force",
+    "prisma:migrate:deploy": "prisma migrate deploy",
+    "prisma:seed": "prisma db seed"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
+  "dependencies": {
+    "@astrojs/vercel": "^8.2.7",
+    "@prisma/client": "^6.15.0",
+    "@supabase/supabase-js": "^2.56.1",
+    "@tailwindcss/vite": "^4.1.12",
+    "astro": "^5.13.4",
+    "mysql2": "^3.14.3",
+    "prisma": "^6.15.0",
+    "tailwindcss": "^4.1.12"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  }
+}

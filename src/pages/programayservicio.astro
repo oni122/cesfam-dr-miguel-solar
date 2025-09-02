@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
+
+const programas = await prisma.programa.findMany({
+  include: { servicios: true },
+});
+---
+
+<Layout title="Programa y Servicios">
+  
+
+<h1 class="text-2xl font-bold mb-4">Programas y Servicios</h1>
+
+<div class="space-y-6">
+  {programas.map((programa) => (
+    <div class="p-4 border rounded-lg shadow-sm bg-white">
+      <h2 class="text-xl font-semibold">{programa.nombre}</h2>
+      <ul class="list-disc ml-6 mt-2">
+        {programa.servicios.map((servicio) => (
+          <li>{servicio.nombre}</li>
+        ))}
+      </ul>
+    </div>
+  ))}
+</div>
+
+</Layout>

@@ -1,0 +1,56 @@
+---
+import HeaderButton from "./HeaderButton.astro";
+---
+
+<header class="w-full bg-white text-black mt-[20px] shadow-2xl rounded">
+  <div class="relative">
+    <div class="flex items-center justify-between px-6 md:px-8 py-3">
+      <nav class="hidden md:flex gap-6 font-semibold">
+        <a href="/" class="shrink-0">
+          <img src="/logo.png" alt="Logo" class="h-12" />
+        </a>
+        <div class="relative group">
+          <HeaderButton href="/">Inicio</HeaderButton>
+        </div>
+        <div class="relative group">
+          <HeaderButton href="/especialidades/especialidades">Programa y Servicios</HeaderButton>
+        </div>
+        <div class="relative group">
+          <HeaderButton href="/atencion/opciones">¿Necesitas atención?</HeaderButton>
+        </div>
+        <div class="relative group">
+          <HeaderButton href="/informate">OIRS</HeaderButton>
+        </div>
+        <div class="relative group">
+          <HeaderButton href="/about">Quienes Somos</HeaderButton>
+        </div>
+      </nav>
+
+      <nav class="ml-auto hidden md:flex gap-3 font-semibold">
+        <a href="/reserva" class="px-3 py-1 bg-white text-black rounded hover:bg-gray-300">Reserva tu Hora</a>
+        <a href="/miclinica" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">Iniciar Sesion</a>
+      </nav>
+
+      <label for="mobile-toggle" class="md:hidden cursor-pointer p-2">
+        <img src="/menu.png" alt="Abrir menú" class="h-7 w-7" />
+      </label>
+    </div>
+
+    <input id="mobile-toggle" type="checkbox" class="peer hidden" />
+    <div class="md:hidden bg-gray-300 text-black max-h-0 overflow-hidden transition-all duration-300 peer-checked:max-h-[32rem] shadow-inner">
+      <nav class="flex flex-col gap-2 px-4 pb-4 font-semibold">
+        <a href="/" class="py-2 border-b border-white/20">Inicio</a>
+        <a href="/especialidades" class="py-2 border-b border-white/20">Especialidades</a>
+        <a href="/atencion/opciones" class="py-2 border-b border-white/20">¿Necesitas atención?</a>
+        <a href="/informate" class="py-2 border-b border-white/20">OIRS</a>
+        <a href="/eligenos" class="py-2 border-b border-white/20">Elígenos</a>
+
+        <div class="mt-3 border-t border-white/30 pt-3 grid grid-cols-1 gap-2">
+          <a href="/reserva" class="px-3 py-1 bg-gray-300 text-black rounded hover:bg-gray-500">Reserva de Hora</a>
+          <a href="/miclinica" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">Mi Clínica </a>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
