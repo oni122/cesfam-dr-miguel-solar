@@ -5,4 +5,7 @@ import tailwind from "@astrojs/tailwind";
 export default defineConfig({
   adapter: vercel(),
   integrations: [tailwind()],
+  experimental: {
+    transitions: true
+  }
 });
