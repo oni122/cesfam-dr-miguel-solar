@@ -12,7 +12,8 @@
     "prisma:migrate:dev": "prisma migrate dev --name init",
     "prisma:migrate:reset": "prisma migrate reset --force",
     "prisma:migrate:deploy": "prisma migrate deploy",
-    "prisma:seed": "prisma db seed"
+    "prisma:seed": "prisma db seed",
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
