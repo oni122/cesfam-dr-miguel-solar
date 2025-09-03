@@ -1,29 +1,19 @@
-// src/pages/api/programas.ts
-import type { APIRoute } from "astro";
-import { PrismaClient } from "@prisma/client";
-
-declare global {
-  var prisma: PrismaClient | undefined;
-}
-
-const prisma = globalThis.prisma || new PrismaClient();
-if (!globalThis.prisma) globalThis.prisma = prisma;
+import type { APIRoute } from 'astro'
+import { supabase } from '../../lib/supabaseclient'
 
 export const GET: APIRoute = async () => {
-  try {
-    const programas = await prisma.programa.findMany({
-      include: { servicios: true },
-    });
+  // Traemos programas y sus servicios relacionados
+  const { data: programas, error } = await supabase
+    .from('programa')
+    .select('id_programa, nombre, servicios(id_servicio, nombre, id_programa)')
 
-    return new Response(JSON.stringify(programas), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  } catch (error) {
-    console.error("Error en API programas:", error);
-    return new Response(
-      JSON.stringify({ error: "Error al obtener programas" }),
-      { status: 500 }
-    );
+  if (error) {
+    console.error('Error Supabase:', error)
+    return new Response(JSON.stringify({ error: error.message }), { status: 500 })
   }
-};
+
+  return new Response(JSON.stringify(programas), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' }
+  })
+}
