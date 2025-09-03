@@ -2,20 +2,35 @@
 import Layout from '../layouts/Layout.astro';
 import { supabase } from '../lib/supabaseclient';
 
-let programas = [];
+let programasConServicios = [];
 
 try {
-  const { data, error } = await supabase
+  // Traemos todos los programas
+  const { data: programas, error: programasError } = await supabase
     .from('programa')
-    .select('id_programa, nombre, servicios(id_servicio, nombre, id_programa)');
+    .select('*');
 
-  if (error) {
-    console.error('Error Supabase:', error);
+  if (programasError) {
+    console.error('Error al cargar programas:', programasError);
   } else {
-    programas = data;
+    // Por cada programa, traemos sus servicios relacionados
+    programasConServicios = await Promise.all(
+      programas.map(async (programa) => {
+        const { data: servicios, error: serviciosError } = await supabase
+          .from('servicio')
+          .select('*')
+          .eq('id_programa', programa.id_programa);
+
+        if (serviciosError) {
+          console.error(`Error cargando servicios para programa ${programa.id_programa}:`, serviciosError);
+        }
+
+        return { ...programa, servicios: servicios || [] };
+      })
+    );
   }
 } catch (e) {
-  console.error('Error cargando programas:', e);
+  console.error('Error cargando programas y servicios:', e);
 }
 ---
 
@@ -23,13 +38,13 @@ try {
   <h1 class="text-2xl font-bold mb-4">Programas y Servicios</h1>
 
   <div class="space-y-6">
-    {programas.length
-      ? programas.map(programa => (
+    {programasConServicios.length
+      ? programasConServicios.map((programa) => (
           <div class="p-4 border rounded-lg shadow-sm bg-white">
             <h2 class="text-xl font-semibold">{programa.nombre}</h2>
             <ul class="list-disc ml-6 mt-2">
-              {programa.servicios?.length
-                ? programa.servicios.map(servicio => (
+              {programa.servicios.length
+                ? programa.servicios.map((servicio) => (
                     <li>{servicio.nombre}</li>
                   ))
                 : <li>No hay servicios disponibles</li>
