@@ -4,7 +4,8 @@ import Layout from '../layouts/Layout.astro';
 let programas = [];
 
 try {
-  const res = await fetch("/api/programas");
+  
+  const res = await fetch("/api/programas"); 
   programas = await res.json();
 } catch (e) {
   console.error("Error cargando programas:", e);
@@ -12,19 +13,26 @@ try {
 }
 ---
 
-<Layout title="Programa y Servicios">
+<Layout title="Programas y Servicios">
   <h1 class="text-2xl font-bold mb-4">Programas y Servicios</h1>
 
   <div class="space-y-6">
-    {programas.map((programa) => (
-      <div class="p-4 border rounded-lg shadow-sm bg-white">
-        <h2 class="text-xl font-semibold">{programa.nombre}</h2>
-        <ul class="list-disc ml-6 mt-2">
-          {programa.servicios.map((servicio) => (
-            <li>{servicio.nombre}</li>
-          ))}
-        </ul>
-      </div>
-    ))}
+    {programas.length
+      ? programas.map((programa) => (
+          <div class="p-4 border rounded-lg shadow-sm bg-white">
+            <h2 class="text-xl font-semibold">{programa.nombre}</h2>
+            <ul class="list-disc ml-6 mt-2">
+  {programa.servicios?.length
+    ? programa.servicios.map((servicio) => (
+        <li>{servicio.nombre}</li> 
+      ))
+    : <li>No hay servicios disponibles</li>
+  }
+</ul>
+
+          </div>
+        ))
+      : <p>No hay programas disponibles.</p>
+    }
   </div>
 </Layout>
