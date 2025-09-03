@@ -5,11 +5,17 @@ import { supabase } from '../lib/supabaseclient';
 let programas = [];
 
 try {
-  const res = await fetch('/api/programas');
-  programas = await res.json();
+  const { data, error } = await supabase
+    .from('programa')
+    .select('id_programa, nombre, servicios(id_servicio, nombre, id_programa)');
+
+  if (error) {
+    console.error('Error Supabase:', error);
+  } else {
+    programas = data;
+  }
 } catch (e) {
   console.error('Error cargando programas:', e);
-  programas = [];
 }
 ---
 
