@@ -1,0 +1,40 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+    <div class="w-full">
+        <div class="flex justify-center">
+            <div class="bg-[#200934] w-[90%] text-center my-6 py-4 rounded">
+                <h1 class="text-white text-2xl">Pide tu hora</h1>
+            </div>
+        </div>
+
+        <div class="flex justify-center text-white">
+            <div class="bg-[#200934] w-[90%] text-center py-4 rounded">
+                <form action="">
+
+                    <div>
+                        <div class="pb-4">
+                            <label for="rut">Ingrese su rut</label>
+                        </div>
+                        <input id="rut" type="text" class="outline-1 rounded">
+                    </div>
+                    
+                    <div class="py-8">
+                        <div class="pb-4">
+                            <label for="rut">Ingrese su digito verificador</label>
+                        </div>
+                        <input id="rut" type="text" class="outline-1 rounded">
+                    </div>
+                    
+                    <div class="flex justify-center">
+                        <div class="bg-[#2c0a71] w-fit">
+                            <input type="submit" class="py-3 px-8 rounded outline-1" value="Revisar">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</Layout>
