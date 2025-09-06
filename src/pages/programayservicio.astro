@@ -1,29 +1,58 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { supabase } from '../lib/supabaseclient';
 
-const programas = await prisma.programa.findMany({
-  include: { servicios: true },
-});
+let programasConServicios = [];
+
+try {
+  // Traemos todos los programas
+  const { data: programas, error: programasError } = await supabase
+    .from('programa')
+    .select('*');
+
+  if (programasError) {
+    console.error('Error al cargar programas:', programasError);
+  } else {
+    // Por cada programa, traemos sus servicios relacionados
+    programasConServicios = await Promise.all(
+      programas.map(async (programa) => {
+        const { data: servicios, error: serviciosError } = await supabase
+          .from('servicio')
+          .select('*')
+          .eq('id_programa', programa.id_programa);
+
+        if (serviciosError) {
+          console.error(`Error cargando servicios para programa ${programa.id_programa}:`, serviciosError);
+        }
+
+        return { ...programa, servicios: servicios || [] };
+      })
+    );
+  }
+} catch (e) {
+  console.error('Error cargando programas y servicios:', e);
+}
 ---
 
-<Layout title="Programa y Servicios">
-  
+<Layout title="Programas y Servicios">
+  <h1 class="text-2xl font-bold mb-4">Programas y Servicios</h1>
 
-<h1 class="text-2xl font-bold mb-4">Programas y Servicios</h1>
-
-<div class="space-y-6">
-  {programas.map((programa) => (
-    <div class="p-4 border rounded-lg shadow-sm bg-white">
-      <h2 class="text-xl font-semibold">{programa.nombre}</h2>
-      <ul class="list-disc ml-6 mt-2">
-        {programa.servicios.map((servicio) => (
-          <li>{servicio.nombre}</li>
-        ))}
-      </ul>
-    </div>
-  ))}
-</div>
-
+  <div class="space-y-6">
+    {programasConServicios.length
+      ? programasConServicios.map((programa) => (
+          <div class="p-4 border rounded-lg shadow-sm bg-white">
+            <h2 class="text-xl font-semibold">{programa.nombre}</h2>
+            <ul class="list-disc ml-6 mt-2">
+              {programa.servicios.length
+                ? programa.servicios.map((servicio) => (
+                    <li>{servicio.nombre}</li>
+                  ))
+                : <li>No hay servicios disponibles</li>
+              }
+            </ul>
+          </div>
+        ))
+      : <p>No hay programas disponibles.</p>
+    }
+  </div>
 </Layout>
