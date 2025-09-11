@@ -44,7 +44,7 @@ try {
             <h2 class="text-xl font-semibold">{programa.nombre}</h2>
             <ul class="list-disc ml-6 mt-2">
               {programa.servicios.length
-                ? programa.servicios.map((servicio) => (
+                ? programa.servicios.map((servicio: { nombre: unknown; }) => (
                     <li>{servicio.nombre}</li>
                   ))
                 : <li>No hay servicios disponibles</li>
