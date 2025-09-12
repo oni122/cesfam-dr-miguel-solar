@@ -15,7 +15,19 @@ import HeaderButton from "./HeaderButton.astro";
 
       <nav class="hidden md:flex flex-1 justify-start gap-6 font-semibold">
         <HeaderButton href="/">Inicio</HeaderButton>
-        <HeaderButton href="/programayservicio">Programa y Servicios</HeaderButton>
+        <HeaderButton href="/noticia">Noticias</HeaderButton>
+        
+        <div class="relative group">
+          <HeaderButton class="cursor-pointer">Institucion</HeaderButton>
+          <div class="absolute left-0 mt-2 w-48 bg-white text-[#200934] rounded shadow-lg opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-50">
+            <a href="/about" class="block px-4 py-2 hover:bg-gray-100">Quienes Somos</a>
+            <a href="/misionvision" class="block px-4 py-2 hover:bg-gray-100">Misión y Visión</a>
+            <a href="/horarios" class="block px-4 py-2 hover:bg-gray-100">Horarios</a>
+          </div>
+        </div>
+
+        <HeaderButton href="/programa">Programas</HeaderButton>
+        <HeaderButton href="/servicio">Servicios</HeaderButton>
         <HeaderButton href="/atencion/opciones">¿Necesitas atención?</HeaderButton>
         <HeaderButton href="/informate">OIRS</HeaderButton>
         <HeaderButton href="/about">Quienes Somos</HeaderButton>

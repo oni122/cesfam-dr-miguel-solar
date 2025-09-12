@@ -5,7 +5,6 @@ import { supabase } from '../lib/supabaseclient';
 let programasConServicios = [];
 
 try {
-  // Traemos todos los programas
   const { data: programas, error: programasError } = await supabase
     .from('programa')
     .select('*');
@@ -13,7 +12,6 @@ try {
   if (programasError) {
     console.error('Error al cargar programas:', programasError);
   } else {
-    // Por cada programa, traemos sus servicios relacionados
     programasConServicios = await Promise.all(
       programas.map(async (programa) => {
         const { data: servicios, error: serviciosError } = await supabase
