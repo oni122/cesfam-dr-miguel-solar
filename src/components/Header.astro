@@ -1,10 +1,12 @@
 ---
 import HeaderButton from "./HeaderButton.astro";
 ---
-
-<header class="w-full shadow-2xl overflow-hidden">
-  <div class="w-full">
-    <img src="header2.png" alt="Foto del hospital" class="object-cover h-[11rem] w-full" />
+<header class="w-full shadow-2xl overflow-hidden relative">
+  <div class="w-full relative">
+    <img src="header2.png" alt="Foto del hospital" class="object-cover h-[11rem] w-full title" />
+    <h4 class="absolute inset-0 flex items-center justify-center text-lg md:text-3xl font-bold text-white bg-black bg-opacity-40 px-2 text-center">
+      CESFAM DR MIGUEL SOLAR DE PAINE
+    </h4>
   </div>
 
   <div class="relative bg-[#200934] text-white">
@@ -15,10 +17,31 @@ import HeaderButton from "./HeaderButton.astro";
 
       <nav class="hidden md:flex flex-1 justify-start gap-6 font-semibold">
         <HeaderButton href="/">Inicio</HeaderButton>
-        <HeaderButton href="/programayservicio">Programa y Servicios</HeaderButton>
+        <HeaderButton href="/noticia">Noticias</HeaderButton>
+
+      <el-dropdown class="relative pt-1">
+        <button class="inline-flex items-center gap-x-1.5 rounded-md bg-white/10 px-3 py-2  text-sm font-semibold text-white hover:bg-white/20 focus:outline-none">
+          Institución
+          <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="-mr-1 size-5 text-gray-400">
+        <path d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+          </svg>
+        </button>
+        <el-menu
+          anchor="bottom start"
+          popover
+          class="absolute mt-2 ml-1 w-56 origin-left rounded-md bg-gray-800 shadow-lg transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in z-50">
+          <div class="py-1">
+        <a href="/about" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white">Quienes Somos</a>
+        <a href="/misionvision" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white">Misión y Visión</a>
+        <a href="/horarios" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white">Horarios</a>
+          </div>
+        </el-menu>
+      </el-dropdown>
+
+        <HeaderButton href="/programa">Programas</HeaderButton>
+        <HeaderButton href="/servicio">Servicios</HeaderButton>
         <HeaderButton href="/atencion/opciones">¿Necesitas atención?</HeaderButton>
-        <HeaderButton href="/informate">OIRS</HeaderButton>
-        <HeaderButton href="/about">Quienes Somos</HeaderButton>
+        <HeaderButton href="/oirs">OIRS</HeaderButton>
       </nav>
 
       <nav class="hidden md:flex gap-3 font-semibold">
@@ -34,11 +57,20 @@ import HeaderButton from "./HeaderButton.astro";
     <input id="mobile-toggle" type="checkbox" class="peer hidden" />
     <div class="md:hidden bg-[#200934] max-h-0 overflow-hidden transition-all duration-300 peer-checked:max-h-[35rem]">
       <nav class="flex flex-col gap-2 px-4 pb-6 font-semibold">
-        <HeaderButton href="/" class="py-2 border-b ">Inicio</HeaderButton>
-        <HeaderButton href="/programayservicio" class="py-2 border-b ">Programa y Servicios</HeaderButton>
-        <HeaderButton href="/atencion/opciones" class="py-2 border-b ">¿Necesitas atención?</HeaderButton>
+        <HeaderButton href="/" class="py-2 border-b">Inicio</HeaderButton>
+        <HeaderButton href="/programayservicio" class="py-2 border-b">Programa y Servicios</HeaderButton>
+        <HeaderButton href="/atencion/opciones" class="py-2 border-b">¿Necesitas atención?</HeaderButton>
         <HeaderButton href="/informate" class="py-2 border-b">OIRS</HeaderButton>
-        <HeaderButton href="/about" class="py-2 border-b ">Quienes Somos</HeaderButton>
+
+        <div class="border-b">
+          <label for="institucion-toggle" class="block py-2 cursor-pointer">Institución</label>
+          <input id="institucion-toggle" type="checkbox" class="peer hidden" />
+          <div class="flex flex-col pl-4 max-h-0 overflow-hidden transition-all duration-300 peer-checked:max-h-40">
+            <a href="/about" class="block py-2">Quienes Somos</a>
+            <a href="/misionvision" class="block py-2">Misión y Visión</a>
+            <a href="/horarios" class="block py-2">Horarios</a>
+          </div>
+        </div>
 
         <div class="mt-4 border-t pt-4 flex flex-col gap-3">
           <HeaderButton href="/reserva" class="px-3 py-2 rounded-lg font-bold text-center">Reserva de Hora</HeaderButton>
@@ -47,4 +79,6 @@ import HeaderButton from "./HeaderButton.astro";
       </nav>
     </div>
   </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
 </header>
