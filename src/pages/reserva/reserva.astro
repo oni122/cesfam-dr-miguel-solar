@@ -1,0 +1,50 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+---
+
+<Layout>
+    <div class="w-full">
+        <header class="flex justify-center">
+            <div class="bg-[#200934] w-[90%] text-center my-6 py-4 rounded">
+                <h1 class="text-white text-2xl">Pide tu hora</h1>
+            </div>
+        </header>
+
+        <div class="flex justify-center text-white">
+            <div class="bg-[#200934] w-[90%] text-center py-4 rounded">
+                <form action="">
+                    <fieldset>
+                        <legend class="text-2xl underline pb-4">Datos del paciente</legend>
+                        <div>
+                            <div class="pb-4">
+                                <label for="rut">Ingrese su rut</label>
+                            </div>
+                            <input id="rut" type="text" class="outline-1 rounded text-black">
+                        </div>
+                        
+                        <div class="py-8">
+                            <div class="pb-4">
+                                <label for="verificador">Ingrese su digito verificador</label>
+                            </div>
+                            <input id="verificador" type="text" class="outline-1 rounded text-black">
+                        </div>
+                        
+                        <div class="flex justify-center">
+                            <input type="submit" class="py-3 px-8 outline rounded outline-2 bg-[#2c0a71]" value="Revisar">
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+
+        <div class="flex justify-center text-white py-4">
+            <div class="bg-[#200934] w-[90%] text-center py-4 rounded">
+                <div class="flex justify-around">
+                    <button class="py-3 px-8 outline rounded outline-2 bg-[#2c0a71]">Por hora</button>
+                    <button class="py-3 px-8 outline rounded outline-2 bg-[#2c0a71]">Por doctor</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
