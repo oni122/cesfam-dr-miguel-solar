@@ -1,5 +1,6 @@
 <template>
-  <VDatePicker v-model="date" :disabled-dates="disabledDates" />
+  <VDatePicker v-model="date" mode="date" :disabled-dates="disabledDates" 
+  />
 </template>
 
 <script setup>
@@ -8,7 +9,7 @@ const date = ref(new Date());
 const disabledDates = ref([
   {
     repeat: {
-      weekdays: [7,1],
+      weekdays: [1],
     },
   },
 ]);
