@@ -37,7 +37,26 @@ import HeaderButton from "./HeaderButton.astro";
         </el-menu>
       </el-dropdown>
 
-        <HeaderButton href="/programa">Programas</HeaderButton>
+        <el-dropdown class="relative pt-1">
+        <button class="inline-flex items-center gap-x-1.5 rounded-md bg-white/10 px-3 py-2  text-sm font-semibold text-white hover:bg-white/20 focus:outline-none">
+          Programas
+          <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="-mr-1 size-5 text-gray-400">
+        <path d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+          </svg>
+        </button>
+        <el-menu
+          anchor="bottom start"
+          class="absolute mt-2 ml-1 w-56 origin-left rounded-md bg-gray-800 shadow-lg transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in z-50">
+          <div class="py-1">
+            <a href="/alimentacioncomp" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white">Alimentacion Complementaria</a>
+            <a href="/Odontologia" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white">Odontologicos</a>
+            <a href="/rehabilitacion" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white">Rehabilitacion</a>
+            <a href="/vidasana" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white">Vida Sana</a>
+
+          </div>
+        </el-menu>
+      </el-dropdown>
+
         <HeaderButton href="/servicio">Servicios</HeaderButton>
         <HeaderButton href="/atencion/opciones">¿Necesitas atención?</HeaderButton>
         <HeaderButton href="/oirs">OIRS</HeaderButton>
