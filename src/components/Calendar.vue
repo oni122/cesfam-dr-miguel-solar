@@ -38,7 +38,7 @@
             </h3>
 
             <p v-if="slotsForSelectedDate.length === 0" class="mt-4 text-sm text-white/70">
-              No hay bloques disponibles para esta fecha. Selecciona otro d&iacute;a.
+              No hay bloques disponibles para esta fecha. Selecciona otro día.
             </p>
 
             <div v-else class="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
@@ -76,9 +76,9 @@
       </div>
 
       <div v-else key="doctor" class="rounded-2xl bg-white/10 p-6 text-left text-white">
-        <h3 class="text-lg font-semibold">B&uacute;squeda por m&eacute;dico</h3>
+        <h3 class="text-lg font-semibold">Búsqueda por médico</h3>
         <p class="mt-2 text-sm text-white/80">
-          Muy pronto podr&aacute;s elegir directamente a tu profesional de confianza y visualizar su agenda.
+          Muy pronto podrás elegir directamente a tu profesional de confianza y visualizar su agenda.
         </p>
       </div>
     </transition>
