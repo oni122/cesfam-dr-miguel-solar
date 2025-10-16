@@ -1,15 +1,20 @@
 ---
 import Layout from "../layouts/Layout.astro";
 
-const title = "Iniciar sesi�n";
+const title = "Iniciar sesi&oacute;n";
 ---
 <Layout title={title}>
   <section class="bg-gradient-to-b from-[#200934] via-[#2d1250] to-[#200934] py-12 md:py-20">
     <div class="mx-auto flex max-w-5xl flex-col gap-10 px-4 sm:px-6 md:flex-row md:items-center md:justify-between">
       <div class="text-center text-white md:max-w-md md:text-left">
-        <h1 class="mt-4 text-3xl font-extrabold leading-tight sm:text-4xl">Inicia sesión con tu RUT</h1>
+        <p class="text-sm font-semibold uppercase tracking-[0.4em] text-white/80">Mi Cl&iacute;nica</p>
+        <h1 class="mt-4 text-3xl font-extrabold leading-tight sm:text-4xl">Inicia sesi&oacute;n con tu RUT</h1>
         <p class="mt-4 text-base text-white/80 md:text-lg">
-          Accede a tus reservas, resultados y recordatorios de salud de manera segura y rápida.
+          Accede a tus reservas, resultados y recordatorios de salud de manera segura y r&aacute;pida.
+        </p>
+        <p class="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-white/10 px-5 py-2 text-sm font-medium text-white/90">
+          <span class="inline-block size-2 rounded-full bg-emerald-400"></span>
+          Atenci&oacute;n disponible las 24 horas
         </p>
       </div>
 
@@ -29,13 +34,13 @@ const title = "Iniciar sesi�n";
           </div>
 
           <div>
-            <label for="password" class="mb-2 block text-sm font-semibold text-[#200934]">Contraseñaa</label>
+            <label for="password" class="mb-2 block text-sm font-semibold text-[#200934]">Contrase&ntilde;a</label>
             <input
               id="password"
               name="password"
               type="password"
               autocomplete="current-password"
-              placeholder="Ingresa tu contraseña"
+              placeholder="Ingresa tu contrase&ntilde;a"
               class="w-full rounded-2xl border border-[#200934]/20 bg-white px-4 py-3 text-base text-[#200934] shadow-sm outline-none transition focus:border-[#200934] focus:ring-2 focus:ring-[#200934]/40"
               required
             />
@@ -61,14 +66,14 @@ const title = "Iniciar sesi�n";
             aria-expanded="false"
             aria-controls="recover-panel"
           >
-            ¿Olvidaste tu contraseñaa?
+            &iquest;Olvidaste tu contrase&ntilde;a?
             <span class="text-xs uppercase tracking-wide text-[#200934]/70">Recuperar</span>
           </button>
 
           <div id="recover-panel" class="mt-4 hidden rounded-2xl border border-dashed border-[#200934]/20 bg-[#f9f7ff] p-5">
             <form id="recover-form" class="space-y-4">
               <p class="text-sm text-[#200934]/80">
-                Ingresa tu RUT para enviarte un enlace de recuperación. Revisa tu bandeja de entrada y sigue las instrucciones.
+                Ingresa tu RUT para enviarte un enlace de recuperaci&oacute;n. Revisa tu bandeja de entrada y sigue las instrucciones.
               </p>
               <div>
                 <label for="recover-rut" class="mb-2 block text-sm font-semibold text-[#200934]">RUT</label>
@@ -152,7 +157,7 @@ const title = "Iniciar sesi�n";
       }
 
       const originalText = loginButton.textContent;
-      loginButton.textContent = 'Validando�';
+      loginButton.textContent = 'Validando&hellip;';
       loginButton.disabled = true;
 
       try {
@@ -165,18 +170,22 @@ const title = "Iniciar sesi�n";
         const data = await response.json();
 
         if (!response.ok) {
-          loginStatus.textContent = data.error ?? 'No pudimos iniciar tu sesi�n.';
+          loginStatus.textContent = data.error ?? 'No pudimos iniciar tu sesi&oacute;n.';
           loginStatus.classList.remove('text-emerald-600');
           loginStatus.classList.add('text-rose-600');
           return;
         }
 
-        loginStatus.textContent = data.message ?? 'Sesi�n iniciada.';
+        loginStatus.textContent = data.message ?? 'Sesi&oacute;n iniciada.';
         loginStatus.classList.remove('text-rose-600');
         loginStatus.classList.add('text-emerald-600');
+        const redirectUrl = data.redirect ?? '/perfil';
+        setTimeout(() => {
+          window.location.href = redirectUrl;
+        }, 400);
       } catch (error) {
         console.error(error);
-        loginStatus.textContent = 'Error de conexi�n. Intenta nuevamente.';
+        loginStatus.textContent = 'Error de conexi&oacute;n. Intenta nuevamente.';
         loginStatus.classList.remove('text-emerald-600');
         loginStatus.classList.add('text-rose-600');
       } finally {
@@ -194,14 +203,14 @@ const title = "Iniciar sesi�n";
       const rut = formData.get('rut')?.toString() ?? '';
 
       if (!rut) {
-        recoverStatus.textContent = 'Ingresa un RUT v�lido.';
+        recoverStatus.textContent = 'Ingresa un RUT v&aacute;lido.';
         recoverStatus.classList.remove('text-emerald-600');
         recoverStatus.classList.add('text-rose-600');
         return;
       }
 
       const originalText = recoverButton.textContent;
-      recoverButton.textContent = 'Enviando�';
+      recoverButton.textContent = 'Enviando&hellip;';
       recoverButton.disabled = true;
 
       try {
@@ -225,7 +234,7 @@ const title = "Iniciar sesi�n";
         recoverStatus.classList.add('text-emerald-600');
       } catch (error) {
         console.error(error);
-        recoverStatus.textContent = 'Error de conexi�n. Intenta nuevamente.';
+        recoverStatus.textContent = 'Error de conexi&oacute;n. Intenta nuevamente.';
         recoverStatus.classList.remove('text-emerald-600');
         recoverStatus.classList.add('text-rose-600');
       } finally {
