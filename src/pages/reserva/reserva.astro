@@ -2,9 +2,16 @@
 import Calendar from "../../components/Calendar.vue";
 import Layout from "../../layouts/Layout.astro";
 
+const user = Astro.locals.user;
+
+if (!user) {
+  return Astro.redirect("/login");
+}
+
+const title = "Reserva de hora";
 ---
 
-<Layout>
+<Layout title={title}>
     <div class="w-full">
         <header class="flex justify-center">
             <div class="bg-[#200934] w-[90%] text-center my-6 py-4 rounded">
@@ -19,16 +26,16 @@ import Layout from "../../layouts/Layout.astro";
                         <legend class="text-2xl underline pb-4">Datos del paciente</legend>
                         <div>
                             <div class="pb-4">
-                                <label for="rut">Ingrese su rut</label>
+                                <label for="rut">Ingresa tu RUT</label>
                             </div>
-                            <input id="rut" type="text" class="outline-1 rounded text-black">
+                            <input id="rut" type="text" value={user.rut} readonly class="outline-1 rounded text-black px-3 py-2">
                         </div>
                         
                         <div class="py-8">
                             <div class="pb-4">
-                                <label for="verificador">Ingrese su digito verificador</label>
+                                <label for="verificador">Ingresa tu d&iacute;gito verificador</label>
                             </div>
-                            <input id="verificador" type="text" class="outline-1 rounded text-black">
+                            <input id="verificador" type="text" placeholder="K" class="outline-1 rounded text-black px-3 py-2">
                         </div>
                         
                         <div class="flex justify-center">

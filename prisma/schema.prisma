@@ -193,3 +193,27 @@ model Servicio {
 
   @@map("servicio")
 }
+
+model Usuario {
+  id_usuario  Int      @id @default(autoincrement())
+  rut         String   @unique
+  password    String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  sesiones Session[]
+
+  @@map("usuario")
+}
+
+model Session {
+  id_session  Int      @id @default(autoincrement())
+  token_hash  String   @unique
+  user_id     Int
+  created_at  DateTime @default(now())
+  expires_at  DateTime
+
+  usuario Usuario @relation(fields: [user_id], references: [id_usuario], onDelete: Cascade)
+
+  @@map("session")
+}
