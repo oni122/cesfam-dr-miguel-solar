@@ -11,26 +11,24 @@ import {
 const jsonResponse = (status: number, payload: unknown) =>
   new Response(JSON.stringify(payload), {
     status,
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
   });
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, cookies }) => {
   const body = (await request.json().catch(() => null)) as {
     rut?: string;
     password?: string;
   } | null;
 
   if (!body) {
-    return jsonResponse(400, { error: "Solicitud inv&aacute;lida." });
+    return jsonResponse(400, { error: "Solicitud inválida." });
   }
 
   const rut = body.rut?.trim() ?? "";
   const password = body.password ?? "";
 
   if (!rut || !password) {
-    return jsonResponse(400, { error: "Debes ingresar tu RUT y contrase&ntilde;a." });
+    return jsonResponse(400, { error: "Debes ingresar tu RUT y contraseña." });
   }
 
   const normalizedRut = normalizeRut(rut);
@@ -39,25 +37,30 @@ export const POST: APIRoute = async ({ request }) => {
     const user = await prisma.usuario.findUnique({ where: { rut: normalizedRut } });
 
     if (!user) {
-      return jsonResponse(401, { error: "RUT o contrase&ntilde;a incorrectos." });
+      return jsonResponse(401, { error: "RUT o contraseña incorrectos." });
     }
 
     const isValid = await bcrypt.compare(password, user.password);
 
     if (!isValid) {
-      return jsonResponse(401, { error: "RUT o contrase&ntilde;a incorrectos." });
+      return jsonResponse(401, { error: "RUT o contraseña incorrectos." });
     }
 
+    // Elimina sesiones anteriores
     await prisma.session.deleteMany({ where: { user_id: user.id_usuario } });
+
+    // Crea nueva sesión
     const { token, expiresAt } = await createUserSession(user.id_usuario);
-    context.cookies.set(SESSION_COOKIE_NAME, token, sessionCookieOptions(expiresAt));
+
+    // ✅ Usa cookies directamente del contexto
+    cookies.set(SESSION_COOKIE_NAME, token, sessionCookieOptions(expiresAt));
 
     return jsonResponse(200, {
-      message: "Autenticaci&oacute;n exitosa.",
+      message: "Autenticación exitosa.",
       redirect: "/perfil",
     });
   } catch (error) {
     console.error("login error", error);
-    return jsonResponse(500, { error: "No pudimos iniciar tu sesi&oacute;n. Int&eacute;ntalo m&aacute;s tarde." });
+    return jsonResponse(500, { error: "No pudimos iniciar tu sesión. Inténtalo más tarde." });
   }
 };
