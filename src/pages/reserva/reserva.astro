@@ -12,42 +12,20 @@ const title = "Reserva de hora";
 ---
 
 <Layout title={title}>
-    <div class="w-full">
-        <header class="flex justify-center">
-            <div class="bg-[#200934] w-[90%] text-center my-6 py-4 rounded">
-                <h1 class="text-white text-2xl">Pide tu hora</h1>
-            </div>
-        </header>
+  <section class="w-full">
+    <header class="flex justify-center">
+      <div class="my-6 w-[90%] rounded bg-[#200934] py-4 text-center text-white">
+        <h1 class="text-2xl font-semibold">Pide tu hora</h1>
+        <p class="mt-2 text-sm text-white/80">
+          Selecciona el día y horario disponible para agendar tu atención.
+        </p>
+      </div>
+    </header>
 
-        <div class="flex justify-center text-white">
-            <div class="bg-[#200934] w-[90%] text-center py-4 rounded">
-                <form action="">
-                    <fieldset>
-                        <legend class="text-2xl underline pb-4">Datos del paciente</legend>
-                        <div>
-                            <div class="pb-4">
-                                <label for="rut">Ingresa tu RUT</label>
-                            </div>
-                            <input id="rut" type="text" value={user.rut} readonly class="outline-1 rounded text-black px-3 py-2">
-                        </div>
-                        
-                        <div class="py-8">
-                            <div class="pb-4">
-                                <label for="verificador">Ingresa tu dígito verificador</label>
-                            </div>
-                            <input id="verificador" type="text" placeholder="K" class="outline-1 rounded text-black px-3 py-2">
-                        </div>
-                        
-                        <div class="flex justify-center">
-                            <input type="submit" class="py-3 px-8 outline rounded outline-2 bg-[#2c0a71]" value="Revisar">
-                        </div>
-                    </fieldset>
-                </form>
-            </div>
-        </div>
-
-        <div class="flex justify-center text-white py-4">
-                <Calendar client:load/>
-        </div>
+    <div class="flex justify-center py-4 text-white">
+      <div class="w-[90%] rounded-2xl bg-[#200934] p-4 shadow-xl">
+        <Calendar client:load />
+      </div>
     </div>
+  </section>
 </Layout>
