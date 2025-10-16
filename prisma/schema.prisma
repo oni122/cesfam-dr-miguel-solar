@@ -193,3 +193,13 @@ model Servicio {
 
   @@map("servicio")
 }
+
+model Usuario {
+  id_usuario  Int      @id @default(autoincrement())
+  rut         String   @unique
+  password    String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@map("usuario")
+}
