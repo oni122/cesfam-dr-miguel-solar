@@ -24,7 +24,7 @@
             <VDatePicker
               v-model="selectedDate"
               mode="date"
-              :disabled-dates="isDateDisabled"
+              :disabled-dates="disabledDateRules"
               :min-date="today"
               color="violet"
               title-position="left"
@@ -200,13 +200,19 @@ if (availabilityData.length > 0) {
   selectedDate.value = fromKeyToDate(availabilityData[0].date);
 }
 
-const isDateDisabled = (candidate) => {
+const isDateExcluded = (candidate) => {
   const date = ensureDate(candidate);
   if (!date) return true;
   if (date < today) return true;
   if (date.getDay() === 0) return true;
   return !availabilityMap.value.has(formatKey(date));
 };
+
+const disabledDateRules = computed(() => [
+  {
+    predicate: (date) => isDateExcluded(date),
+  },
+]);
 
 const selectedDateKey = computed(() => {
   const date = ensureDate(selectedDate.value);
