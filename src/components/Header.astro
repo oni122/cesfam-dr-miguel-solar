@@ -1,6 +1,8 @@
 ---
 import HeaderButton from "./HeaderButton.astro";
 
+const user = Astro.locals.user as { id: number; rut: string } | null;
+
 const menuSections = [
   { kind: "link", href: "/", label: "Inicio" },
   { kind: "link", href: "/noticia", label: "Noticias" },
@@ -41,10 +43,18 @@ const menuSections = [
   { kind: "link", href: "/atencion/opciones", label: "¿Necesitas atención?" },
 ];
 
-const ctaLinks = [
-  { href: "/reserva/reserva", label: "Reserva tu Hora" },
-  { href: "/login", label: "Iniciar sesión" },
-];
+const primaryCta = { href: "/reserva/reserva", label: "Reserva tu Hora" };
+
+const mobileActions = user
+  ? [
+      { kind: "link", href: primaryCta.href, label: primaryCta.label },
+      { kind: "link", href: "/perfil", label: "Ver perfil" },
+      { kind: "action", label: "Cerrar sesión" },
+    ]
+  : [
+      { kind: "link", href: primaryCta.href, label: primaryCta.label },
+      { kind: "link", href: "/login", label: "Iniciar sesión" },
+    ];
 ---
 
 <header class="w-full shadow-2xl overflow-hidden relative">
@@ -91,10 +101,37 @@ const ctaLinks = [
         }
       </nav>
 
-      <nav class="hidden md:flex gap-3 font-semibold">
-        {ctaLinks.map((link) => (
-          <HeaderButton href={link.href}>{link.label}</HeaderButton>
-        ))}
+      <nav class="hidden md:flex items-center gap-3 font-semibold">
+        <HeaderButton href={primaryCta.href}>{primaryCta.label}</HeaderButton>
+        {
+          user ? (
+            <el-dropdown class="relative">
+              <button class="inline-flex items-center gap-x-1.5 rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white hover:bg-white/20 focus:outline-none">
+                Mi cuenta
+                <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="-mr-1 size-5 text-gray-400">
+                  <path d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+                </svg>
+              </button>
+              <el-menu
+                anchor="bottom end"
+                class="absolute mt-2 w-48 origin-right rounded-md bg-gray-800 shadow-lg transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in z-50">
+                <div class="py-1">
+                  <a href="/perfil" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white">
+                    Ver perfil
+                  </a>
+                  <button
+                    type="button"
+                    data-logout
+                    class="block w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white">
+                    Cerrar sesión
+                  </button>
+                </div>
+              </el-menu>
+            </el-dropdown>
+          ) : (
+            <HeaderButton href="/login">Iniciar sesión</HeaderButton>
+          )
+        }
       </nav>
 
       <label for="mobile-toggle" class="md:hidden cursor-pointer p-2">
@@ -128,13 +165,42 @@ const ctaLinks = [
         }
 
         <div class="mt-4 border-t pt-4 flex flex-col gap-3">
-          {ctaLinks.map((link) => (
-            <HeaderButton href={link.href}>{link.label}</HeaderButton>
-          ))}
+          {mobileActions.map((item) =>
+            item.kind === "link" ? (
+              <HeaderButton href={item.href}>{item.label}</HeaderButton>
+            ) : (
+              <button
+                type="button"
+                data-logout
+                class="flex-row justify-center cursor-pointer bg-white/10 hover:bg-white/20 text-white focus:ring-4 focus:outline-none focus:ring-white/40 font-medium rounded-lg px-5 py-2.5 text-center inline-flex items-center gap-x-2 transition-all duration-200 ease-in-out">
+                Cerrar sesión
+              </button>
+            )
+          )}
         </div>
       </nav>
     </div>
   </div>
+
+  <script type="module">
+    const logoutButtons = document.querySelectorAll("[data-logout]");
+    logoutButtons.forEach((button) => {
+      button.addEventListener("click", async (event) => {
+        event.preventDefault();
+
+        try {
+          const response = await fetch("/api/logout", { method: "POST" });
+          if (!response.ok && response.status !== 204) {
+            throw new Error("No se pudo cerrar la sesión.");
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          window.location.href = "/";
+        }
+      });
+    });
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
 </header>
