@@ -2,7 +2,7 @@ export const prerender = false;
 export const runtime = "nodejs";
 
 import type { APIRoute } from "astro";
-import * as bcrypt from "bcryptjs";
+import bcrypt from "bcryptjs";
 import { prisma } from "../../lib/prisma";
 import { normalizeRut } from "../../utils/rut";
 import {
