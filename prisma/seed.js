@@ -58,18 +58,31 @@ async function main() {
     ],
   });
 
-  const demoPassword = await bcrypt.hash('ContrasenaDemo1!', 10);
+  const [demoPassword, adminPassword] = await Promise.all([
+    bcrypt.hash('ContrasenaDemo1!', 10),
+    bcrypt.hash('AdminDemo1!', 10),
+  ]);
 
-  await prisma.usuario.upsert({
-    where: { rut: '11111111-1' },
-    update: {},
-    create: {
-      rut: '11111111-1',
-      password: demoPassword,
-    },
-  });
+  await Promise.all([
+    prisma.usuario.upsert({
+      where: { rut: '11111111-1' },
+      update: { password: demoPassword },
+      create: {
+        rut: '11111111-1',
+        password: demoPassword,
+      },
+    }),
+    prisma.usuario.upsert({
+      where: { rut: '22222222-2' },
+      update: { password: adminPassword },
+      create: {
+        rut: '22222222-2',
+        password: adminPassword,
+      },
+    }),
+  ]);
 
-  console.log('Seed: datos insertados correctamente.');
+  console.log('Seed: datos insertados correctamente. Usuarios disponibles: 11111111-1 / ContrasenaDemo1!, 22222222-2 / AdminDemo1!');
 }
 
 main()
