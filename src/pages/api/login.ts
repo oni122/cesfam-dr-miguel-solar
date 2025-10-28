@@ -1,3 +1,6 @@
+export const prerender = false;
+export const runtime = "nodejs";
+
 import type { APIRoute } from "astro";
 import * as bcrypt from "bcryptjs";
 import { prisma } from "../../lib/prisma";
@@ -7,6 +10,7 @@ import {
   createUserSession,
   sessionCookieOptions,
 } from "../../utils/session";
+
 
 const jsonResponse = (status: number, payload: unknown) =>
   new Response(JSON.stringify(payload), {
