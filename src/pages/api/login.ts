@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import bcrypt from "bcryptjs";
+import * as bcrypt from "bcryptjs";
 import { prisma } from "../../lib/prisma";
 import { normalizeRut } from "../../utils/rut";
 import {
