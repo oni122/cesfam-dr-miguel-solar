@@ -1,8 +1,8 @@
 /// <reference types="astro/client" />
 
 interface ImportMetaEnv {
-  readonly PUBLIC_SUPABASE_URL: string;
-  readonly PUBLIC_SUPABASE_ANON_KEY: string;
+  readonly SUPABASE_URL: string;
+  readonly SUPABASE_KEY: string;
 }
 
 interface ImportMeta {
@@ -14,6 +14,7 @@ declare namespace App {
     user: {
       id: number;
       rut: string;
+      isAdmin: boolean;
     } | null;
   }
 }

@@ -1,15 +1,15 @@
 ---
 import Layout from "../layouts/Layout.astro";
 
-const title = "Iniciar sesión";
+const title = "Iniciar sesion";
 ---
 <Layout title={title}>
   <section class="bg-gradient-to-b from-[#200934] via-[#2d1250] to-[#200934] py-12 md:py-20">
     <div class="mx-auto flex max-w-5xl flex-col gap-10 px-4 sm:px-6 md:flex-row md:items-center md:justify-between">
       <div class="text-center text-white md:max-w-md md:text-left">
-        <h1 class="mt-4 text-3xl font-extrabold leading-tight sm:text-4xl">Inicia sesión con tu RUT</h1>
+        <h1 class="mt-4 text-3xl font-extrabold leading-tight sm:text-4xl">Inicia sesion con tu RUT</h1>
         <p class="mt-4 text-base text-white/80 md:text-lg">
-          Accede a tus reservas, resultados y recordatorios de salud de manera segura y rápida.
+          Accede a tus reservas, resultados y recordatorios de salud de manera segura y rapida.
         </p>
       </div>
 
@@ -29,13 +29,13 @@ const title = "Iniciar sesión";
           </div>
 
           <div>
-            <label for="password" class="mb-2 block text-sm font-semibold text-[#200934]">Contraseña</label>
+            <label for="password" class="mb-2 block text-sm font-semibold text-[#200934]">Contrasena</label>
             <input
               id="password"
               name="password"
               type="password"
               autocomplete="current-password"
-              placeholder="Ingresa tu contraseña"
+              placeholder="Ingresa tu contrasena"
               class="w-full rounded-2xl border border-[#200934]/20 bg-white px-4 py-3 text-base text-[#200934] shadow-sm outline-none transition focus:border-[#200934] focus:ring-2 focus:ring-[#200934]/40"
               required
             />
@@ -61,14 +61,14 @@ const title = "Iniciar sesión";
             aria-expanded="false"
             aria-controls="recover-panel"
           >
-            ¿Olvidaste tu contraseña?
+            Olvidaste tu contrasena?
             <span class="text-xs uppercase tracking-wide text-[#200934]/70">Recuperar</span>
           </button>
 
           <div id="recover-panel" class="mt-4 hidden rounded-2xl border border-dashed border-[#200934]/20 bg-[#f9f7ff] p-5">
             <form id="recover-form" class="space-y-4">
               <p class="text-sm text-[#200934]/80">
-                Ingresa tu RUT para enviarte un enlace de recuperación. Revisa tu bandeja de entrada y sigue las instrucciones.
+                Ingresa tu RUT para enviarte un enlace de recuperacion. Revisa tu bandeja de entrada y sigue las instrucciones.
               </p>
               <div>
                 <label for="recover-rut" class="mb-2 block text-sm font-semibold text-[#200934]">RUT</label>
@@ -165,13 +165,16 @@ const title = "Iniciar sesión";
         const data = await response.json();
 
         if (!response.ok) {
-          loginStatus.textContent = data.error ?? 'No pudimos iniciar tu sesión.';
+          loginStatus.textContent = data.error ?? 'No pudimos iniciar tu sesion.';
           loginStatus.classList.remove('text-emerald-600');
           loginStatus.classList.add('text-rose-600');
           return;
         }
 
-        loginStatus.textContent = data.message ?? 'Sesión iniciada.';
+        const successMessage = data.isAdmin
+          ? 'Accediendo al panel administrativo.'
+          : data.message ?? 'Sesion iniciada.';
+        loginStatus.textContent = successMessage;
         loginStatus.classList.remove('text-rose-600');
         loginStatus.classList.add('text-emerald-600');
         const redirectUrl = data.redirect ?? '/perfil';
@@ -180,7 +183,7 @@ const title = "Iniciar sesión";
         }, 400);
       } catch (error) {
         console.error(error);
-        loginStatus.textContent = 'Error de conexión. Intenta nuevamente.';
+        loginStatus.textContent = 'Error de conexion. Intenta nuevamente.';
         loginStatus.classList.remove('text-emerald-600');
         loginStatus.classList.add('text-rose-600');
       } finally {
@@ -198,14 +201,14 @@ const title = "Iniciar sesión";
       const rut = formData.get('rut')?.toString() ?? '';
 
       if (!rut) {
-        recoverStatus.textContent = 'Ingresa un RUT válido.';
+        recoverStatus.textContent = 'Ingresa un RUT valido.';
         recoverStatus.classList.remove('text-emerald-600');
         recoverStatus.classList.add('text-rose-600');
         return;
       }
 
       const originalText = recoverButton.textContent;
-      recoverButton.textContent = 'Enviando…';
+      recoverButton.textContent = 'Enviando...';
       recoverButton.disabled = true;
 
       try {
@@ -229,7 +232,7 @@ const title = "Iniciar sesión";
         recoverStatus.classList.add('text-emerald-600');
       } catch (error) {
         console.error(error);
-        recoverStatus.textContent = 'Error de conexión. Intenta nuevamente.';
+        recoverStatus.textContent = 'Error de conexion. Intenta nuevamente.';
         recoverStatus.classList.remove('text-emerald-600');
         recoverStatus.classList.add('text-rose-600');
       } finally {

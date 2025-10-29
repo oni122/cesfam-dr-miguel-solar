@@ -10,7 +10,7 @@ import {
   createUserSession,
   sessionCookieOptions,
 } from "../../utils/session";
-
+import { isAdminByRut } from "../../utils/admin";
 
 const jsonResponse = (status: number, payload: unknown) =>
   new Response(JSON.stringify(payload), {
@@ -25,14 +25,14 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   } | null;
 
   if (!body) {
-    return jsonResponse(400, { error: "Solicitud inválida." });
+    return jsonResponse(400, { error: "Solicitud invalida." });
   }
 
   const rut = body.rut?.trim() ?? "";
   const password = body.password ?? "";
 
   if (!rut || !password) {
-    return jsonResponse(400, { error: "Debes ingresar tu RUT y contraseña." });
+    return jsonResponse(400, { error: "Debes ingresar tu RUT y contrasena." });
   }
 
   const normalizedRut = normalizeRut(rut);
@@ -41,30 +41,29 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     const user = await prisma.usuario.findUnique({ where: { rut: normalizedRut } });
 
     if (!user) {
-      return jsonResponse(401, { error: "RUT o contraseña incorrectos." });
+      return jsonResponse(401, { error: "RUT o contrasena incorrectos." });
     }
 
     const isValid = await bcrypt.compare(password, user.password);
 
     if (!isValid) {
-      return jsonResponse(401, { error: "RUT o contraseña incorrectos." });
+      return jsonResponse(401, { error: "RUT o contrasena incorrectos." });
     }
 
-    // Elimina sesiones anteriores
+    const isAdmin = await isAdminByRut(normalizedRut);
+
     await prisma.session.deleteMany({ where: { user_id: user.id_usuario } });
 
-    // Crea nueva sesión
     const { token, expiresAt } = await createUserSession(user.id_usuario);
-
-    // ✅ Usa cookies directamente del contexto
     cookies.set(SESSION_COOKIE_NAME, token, sessionCookieOptions(expiresAt));
 
     return jsonResponse(200, {
-      message: "Autenticación exitosa.",
-      redirect: "/perfil",
+      message: "Autenticacion exitosa.",
+      redirect: isAdmin ? "/admin" : "/perfil",
+      isAdmin,
     });
   } catch (error) {
     console.error("login error", error);
-    return jsonResponse(500, { error: "No pudimos iniciar tu sesión. Inténtalo más tarde." });
+    return jsonResponse(500, { error: "No pudimos iniciar tu sesion. Intentalo mas tarde." });
   }
 };
