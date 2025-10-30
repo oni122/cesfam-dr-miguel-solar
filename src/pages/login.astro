@@ -173,6 +173,8 @@ const title = "Iniciar sesion";
 
         const successMessage = data.isAdmin
           ? 'Accediendo al panel administrativo.'
+          : data.isWorker
+          ? 'Accediendo al espacio del trabajador.'
           : data.message ?? 'Sesion iniciada.';
         loginStatus.textContent = successMessage;
         loginStatus.classList.remove('text-rose-600');

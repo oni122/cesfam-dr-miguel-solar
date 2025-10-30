@@ -15,6 +15,15 @@ declare namespace App {
       id: number;
       rut: string;
       isAdmin: boolean;
+      isWorker: boolean;
+      worker:
+        | {
+            id: number;
+            estado: string;
+            specialtyId: number | null;
+            specialtyName: string | null;
+          }
+        | null;
     } | null;
   }
 }

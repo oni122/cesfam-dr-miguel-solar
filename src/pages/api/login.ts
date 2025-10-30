@@ -10,7 +10,10 @@ import {
   createUserSession,
   sessionCookieOptions,
 } from "../../utils/session";
-import { isAdminByRut } from "../../utils/admin";
+import {
+  ADMIN_SPECIALTY_NAME,
+  getWorkerByRut,
+} from "../../utils/admin";
 
 const jsonResponse = (status: number, payload: unknown) =>
   new Response(JSON.stringify(payload), {
@@ -50,7 +53,11 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       return jsonResponse(401, { error: "RUT o contrasena incorrectos." });
     }
 
-    const isAdmin = await isAdminByRut(normalizedRut);
+    const workerRecord = await getWorkerByRut(normalizedRut);
+    const isWorker = Boolean(workerRecord);
+    const isAdmin =
+      workerRecord?.especialidad?.nombre_especialidad ===
+      ADMIN_SPECIALTY_NAME;
 
     await prisma.session.deleteMany({ where: { user_id: user.id_usuario } });
 
@@ -59,8 +66,10 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
     return jsonResponse(200, {
       message: "Autenticacion exitosa.",
-      redirect: isAdmin ? "/admin" : "/perfil",
+      redirect: isAdmin ? "/admin" : isWorker ? "/trabajador" : "/perfil",
       isAdmin,
+      isWorker,
+      specialty: workerRecord?.especialidad?.nombre_especialidad ?? null,
     });
   } catch (error) {
     console.error("login error", error);

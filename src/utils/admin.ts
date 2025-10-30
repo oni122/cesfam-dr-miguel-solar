@@ -2,22 +2,25 @@ import { prisma } from "../lib/prisma";
 
 export const ADMIN_SPECIALTY_NAME = "Administracion";
 
-export const isAdminByRut = async (rut: string) => {
+export const getWorkerByRut = async (rut: string) => {
   if (!rut) {
-    return false;
+    return null;
   }
 
-  const adminRecord = await prisma.trabajador.findFirst({
-    where: {
-      rut_trabajador: rut,
+  return prisma.trabajador.findFirst({
+    where: { rut_trabajador: rut },
+    include: {
       especialidad: {
-        is: {
-          nombre_especialidad: ADMIN_SPECIALTY_NAME,
+        select: {
+          id_especialidad: true,
+          nombre_especialidad: true,
         },
       },
     },
-    select: { id_trabajador: true },
   });
+};
 
-  return Boolean(adminRecord);
+export const isAdminByRut = async (rut: string) => {
+  const worker = await getWorkerByRut(rut);
+  return worker?.especialidad?.nombre_especialidad === ADMIN_SPECIALTY_NAME;
 };
