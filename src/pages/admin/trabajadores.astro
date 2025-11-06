@@ -218,13 +218,14 @@ const [especialidades, trabajadores] = await Promise.all([
   </section>
 </Layout>
 
-<script type="module" lang="ts">
-  const form = document.querySelector<HTMLFormElement>('#create-worker-form');
-  const statusField = document.querySelector<HTMLParagraphElement>('#create-worker-status');
-  const submitButton = document.querySelector<HTMLButtonElement>('#create-worker-submit');
+<script type="module">
+  /** @type {HTMLFormElement | null} */
+  const form = document.querySelector('#create-worker-form');
+  const statusField = document.querySelector('#create-worker-status');
+  const submitButton = document.querySelector('#create-worker-submit');
 
-  const toJSON = (formData: FormData) => {
-    const payload: Record<string, unknown> = {};
+  const toJSON = (formData) => {
+    const payload = {};
     formData.forEach((value, key) => {
       payload[key] = typeof value === 'string' ? value.trim() : value;
     });
