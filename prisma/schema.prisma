@@ -133,6 +133,7 @@ model Trabajador {
   id_especialidad           Int?
   empresa                   Empresa?      @relation(fields: [id_empresa], references: [id_empresa])
   especialidad              Especialidad? @relation(fields: [id_especialidad], references: [id_especialidad])
+  disponibilidades          DisponibilidadTrabajador[]
 }
 
 model Especialidad {
@@ -195,4 +196,14 @@ model Session {
   usuario    Usuario  @relation(fields: [user_id], references: [id_usuario], onDelete: Cascade, onUpdate: NoAction, map: "fk_session_usuario")
 
   @@map("session")
+}
+
+model DisponibilidadTrabajador {
+  id_disponibilidad Int          @id @default(autoincrement())
+  id_trabajador     Int
+  fecha             DateTime
+  estado            String       @default("disponible")
+  trabajador        Trabajador   @relation(fields: [id_trabajador], references: [id_trabajador])
+  @@map("disponibilidad_trabajador")
+  @@unique([id_trabajador, fecha], map: "trabajador_fecha_unica")
 }
