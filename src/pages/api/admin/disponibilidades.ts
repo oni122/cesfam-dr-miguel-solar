@@ -7,7 +7,7 @@ import {
   SESSION_COOKIE_NAME,
   getSessionFromToken,
 } from "../../../utils/session";
-import { isAdminByRut } from "../../../utils/admin";
+import { ADMIN_SPECIALTY_NAME, isAdminByRut } from "../../../utils/admin";
 
 const jsonResponse = (status: number, payload: unknown) =>
   new Response(JSON.stringify(payload), {
@@ -144,11 +144,22 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
   const worker = await prisma.trabajador.findUnique({
     where: { id_trabajador: trabajadorId },
-    select: { id_trabajador: true },
+    select: {
+      id_trabajador: true,
+      especialidad: {
+        select: { nombre_especialidad: true },
+      },
+    },
   });
 
   if (!worker) {
     return jsonResponse(404, { error: "Trabajador no encontrado." });
+  }
+
+  if (worker.especialidad?.nombre_especialidad === ADMIN_SPECIALTY_NAME) {
+    return jsonResponse(400, {
+      error: "No puedes asignar horarios al personal administrador.",
+    });
   }
 
   const slots: { id_trabajador: number; fecha: Date; estado: string }[] = [];
@@ -232,6 +243,16 @@ export const GET: APIRoute = async ({ request, cookies }) => {
         ? { id_trabajador: trabajadorId }
         : {}),
       fecha: { gte: fromDate, lte: toDate },
+      trabajador: {
+        OR: [
+          { especialidad: { is: null } },
+          {
+            especialidad: {
+              is: { nombre_especialidad: { not: ADMIN_SPECIALTY_NAME } },
+            },
+          },
+        ],
+      },
     },
     orderBy: { fecha: "asc" },
     include: {
@@ -257,4 +278,93 @@ export const GET: APIRoute = async ({ request, cookies }) => {
       trabajador: slot.trabajador,
     })),
   );
+};
+
+const parseSlotIds = (value: unknown) =>
+  Array.isArray(value)
+    ? value
+        .map((slotId) => Number(slotId))
+        .filter((slotId) => Number.isInteger(slotId) && slotId > 0)
+    : [];
+
+export const DELETE: APIRoute = async ({ request, cookies }) => {
+  const session = await ensureAdminSession(cookies);
+
+  if (!session) {
+    return jsonResponse(401, { error: "No autorizado." });
+  }
+
+  const payload = await request.json().catch(() => null);
+
+  if (!payload || typeof payload !== "object") {
+    return jsonResponse(400, { error: "Solicitud invalida." });
+  }
+
+  const mode = String((payload as Record<string, unknown>).mode ?? "").toLowerCase();
+
+  if (mode === "slot") {
+    const slotIds = parseSlotIds((payload as Record<string, unknown>).slotIds);
+
+    if (slotIds.length === 0) {
+      return jsonResponse(400, { error: "Debes indicar al menos un bloque a eliminar." });
+    }
+
+    const trabajadorIdValue = (payload as Record<string, unknown>).trabajadorId;
+    const trabajadorId = trabajadorIdValue ? Number(trabajadorIdValue) : null;
+    const where = {
+      id_disponibilidad: { in: slotIds },
+      ...(trabajadorId && Number.isInteger(trabajadorId) && trabajadorId > 0
+        ? { id_trabajador: trabajadorId }
+        : {}),
+    };
+
+    const result = await prisma.disponibilidadTrabajador.deleteMany({ where });
+
+    if (result.count === 0) {
+      return jsonResponse(404, { error: "No encontramos bloques para eliminar." });
+    }
+
+    return jsonResponse(200, {
+      message: `Se eliminaron ${result.count} bloque(s) de disponibilidad.`,
+      removed: result.count,
+    });
+  }
+
+  if (mode === "day") {
+    const trabajadorId = Number((payload as Record<string, unknown>).trabajadorId);
+    const date = parseDateInput((payload as Record<string, unknown>).date);
+
+    if (!Number.isInteger(trabajadorId) || trabajadorId <= 0) {
+      return jsonResponse(400, { error: "Trabajador invalido para eliminar el dia." });
+    }
+
+    if (!date) {
+      return jsonResponse(400, { error: "Fecha invalida." });
+    }
+
+    const dayStart = new Date(date);
+    dayStart.setHours(0, 0, 0, 0);
+    const nextDay = addDays(dayStart, 1);
+
+    const result = await prisma.disponibilidadTrabajador.deleteMany({
+      where: {
+        id_trabajador: trabajadorId,
+        fecha: {
+          gte: dayStart,
+          lt: nextDay,
+        },
+      },
+    });
+
+    if (result.count === 0) {
+      return jsonResponse(404, { error: "No encontramos horarios para ese dia." });
+    }
+
+    return jsonResponse(200, {
+      message: `Se eliminaron ${result.count} bloque(s) del dia seleccionado.`,
+      removed: result.count,
+    });
+  }
+
+  return jsonResponse(400, { error: "Modo de eliminacion no soportado." });
 };
