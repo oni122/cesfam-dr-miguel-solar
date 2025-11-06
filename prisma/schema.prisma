@@ -116,6 +116,7 @@ model Paciente {
   fecha_hora              FechaHora? @relation(fields: [id_fecha_hora], references: [id_fecha_hora])
   reserva                 Reserva?   @relation(fields: [id_reserva], references: [id_reserva])
   urgencia                Urgencia?  @relation(fields: [id_urgencia], references: [id_urgencia])
+  disponibilidades        DisponibilidadTrabajador[]
 }
 
 model Trabajador {
@@ -204,6 +205,9 @@ model DisponibilidadTrabajador {
   fecha             DateTime
   estado            String       @default("disponible")
   trabajador        Trabajador   @relation(fields: [id_trabajador], references: [id_trabajador])
+  id_paciente       Int?
+  paciente          Paciente?    @relation(fields: [id_paciente], references: [id_paciente])
+  nota              String?
   @@map("disponibilidad_trabajador")
   @@unique([id_trabajador, fecha], map: "trabajador_fecha_unica")
 }

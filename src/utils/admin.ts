@@ -1,6 +1,7 @@
 import { prisma } from "../lib/prisma";
 
 export const ADMIN_SPECIALTY_NAME = "Administracion";
+export const GENERAL_SPECIALTY_NAME = "Medicina General";
 
 export const getWorkerByRut = async (rut: string) => {
   if (!rut) {
