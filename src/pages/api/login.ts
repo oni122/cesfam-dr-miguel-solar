@@ -59,6 +59,13 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       workerRecord?.especialidad?.nombre_especialidad ===
       ADMIN_SPECIALTY_NAME;
 
+    if (workerRecord && workerRecord.estado_trabajador !== "Activo") {
+      return jsonResponse(403, {
+        error:
+          "Tu acceso como trabajador esta desactivado. Contacta al administrador para reactivar tu cuenta.",
+      });
+    }
+
     await prisma.session.deleteMany({ where: { user_id: user.id_usuario } });
 
     const { token, expiresAt } = await createUserSession(user.id_usuario);

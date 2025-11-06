@@ -2,6 +2,7 @@ export const prerender = false;
 export const runtime = "nodejs";
 
 import type { APIRoute } from "astro";
+import { Prisma } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { prisma } from "../../../lib/prisma";
 import { normalizeRut } from "../../../utils/rut";
@@ -194,6 +195,110 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     return jsonResponse(500, {
       error:
         "No pudimos crear el trabajador. Intenta nuevamente o revisa los datos ingresados.",
+    });
+  }
+};
+
+export const PATCH: APIRoute = async ({ request, cookies }) => {
+  const token = cookies.get(SESSION_COOKIE_NAME)?.value;
+
+  if (!token) {
+    return jsonResponse(401, { error: "No autorizado." });
+  }
+
+  const session = await getSessionFromToken(token);
+
+  if (!session) {
+    cookies.delete(SESSION_COOKIE_NAME, { path: "/" });
+    return jsonResponse(401, { error: "Sesion invalida." });
+  }
+
+  const isAdmin = await isAdminByRut(session.usuario.rut);
+
+  if (!isAdmin) {
+    return jsonResponse(403, { error: "Requiere permisos de administrador." });
+  }
+
+  const payload = await request.json().catch(() => null);
+
+  if (!payload || typeof payload !== "object") {
+    return jsonResponse(400, { error: "Solicitud invalida." });
+  }
+
+  const trabajadorIdValue = (payload as Record<string, unknown>).trabajadorId;
+  const action = sanitizeString((payload as Record<string, unknown>).action).toLowerCase();
+  let nextEstado = sanitizeString((payload as Record<string, unknown>).estado);
+
+  if (!nextEstado) {
+    if (action === "desactivar" || action === "deactivate") {
+      nextEstado = "Inactivo";
+    } else if (action === "activar" || action === "activate") {
+      nextEstado = "Activo";
+    }
+  }
+
+  const trabajadorId = Number(trabajadorIdValue);
+
+  if (!Number.isInteger(trabajadorId) || trabajadorId <= 0) {
+    return jsonResponse(400, { error: "Identificador de trabajador invalido." });
+  }
+
+  if (!["Activo", "Inactivo"].includes(nextEstado)) {
+    return jsonResponse(400, { error: "Estado solicitado no valido." });
+  }
+
+  try {
+    const updatedWorker = await prisma.$transaction(async (tx) => {
+      const worker = await tx.trabajador.update({
+        where: { id_trabajador: trabajadorId },
+        data: { estado_trabajador: nextEstado },
+        include: {
+          especialidad: {
+            select: {
+              id_especialidad: true,
+              nombre_especialidad: true,
+            },
+          },
+        },
+      });
+
+      if (nextEstado !== "Activo") {
+        const user = await tx.usuario.findUnique({
+          where: { rut: worker.rut_trabajador },
+          select: { id_usuario: true },
+        });
+
+        if (user) {
+          await tx.session.deleteMany({ where: { user_id: user.id_usuario } });
+        }
+      }
+
+      return worker;
+    });
+
+    return jsonResponse(200, {
+      message:
+        nextEstado === "Activo"
+          ? "Trabajador reactivado correctamente."
+          : "Trabajador desactivado correctamente.",
+      trabajador: {
+        id: updatedWorker.id_trabajador,
+        rut: updatedWorker.rut_trabajador,
+        estado: updatedWorker.estado_trabajador,
+        especialidad: updatedWorker.especialidad?.nombre_especialidad ?? "Sin asignar",
+      },
+    });
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      return jsonResponse(404, { error: "Trabajador no encontrado." });
+    }
+
+    console.error("update worker status error", error);
+    return jsonResponse(500, {
+      error: "No pudimos actualizar el estado. Intenta nuevamente mas tarde.",
     });
   }
 };
