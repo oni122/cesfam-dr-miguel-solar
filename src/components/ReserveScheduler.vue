@@ -43,6 +43,8 @@
               v-model="selectedDate"
               mode="date"
               :disabled-dates="disabledDates"
+              :min-date="minDate"
+              :max-date="maxDate"
               color="violet"
               title-position="left"
             />
@@ -151,6 +153,8 @@ const reserving = ref(false);
 const days = ref([]);
 const selectedDate = ref(null);
 const selectedSlot = ref(null);
+const minDate = ref(null);
+const maxDate = ref(null);
 
 const fetchAvailability = async () => {
   if (!props.patientName) {
@@ -171,11 +175,14 @@ const fetchAvailability = async () => {
     }
     const data = await response.json();
     days.value = Array.isArray(data.days) ? data.days : [];
+    minDate.value = data.range?.from ? new Date(`${data.range.from}T00:00:00`) : null;
+    maxDate.value = data.range?.to ? new Date(`${data.range.to}T00:00:00`) : null;
     if (days.value.length > 0) {
       const firstDate = days.value[0].date;
       selectedDate.value = firstDate ? new Date(`${firstDate}T00:00:00`) : null;
     } else {
       selectedDate.value = null;
+      selectedSlot.value = null;
     }
   } catch (err) {
     console.error(err);
